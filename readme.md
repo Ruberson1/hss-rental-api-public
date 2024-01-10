@@ -1,95 +1,47 @@
-# Sobre
+# HSS RENTAL
 
-Neste repositório vamos fazer a criação de uma imagem Docker que embora possa ser utilizada em produção, ainda merece ser aperfeiçoada para permitir realmente o escalonamento da aplicação.
+Bem-vindo à documentação da HSS RENTAL - sua solução de locação de veículos desenvolvida com Laravel 10. Esta aplicação oferece uma plataforma fácil de usar para clientes (CUSTOMER) se cadastrarem, escolherem veículos, e efetuarem locações, enquanto os funcionários (COMMOM) gerenciam e confirmam as locações. Os administradores (ADMIN) têm permissões adicionais para gerenciar usuários, veículos e outras configurações.
 
-# Conteúdo da Imagem Docker
+**Conheça a HSS RENTAL:** [Acesse](https://hssrental.netlify.app)
 
-- <b>PHP</b>, e diversas extensões e Libs do PHP, incluindo php-redis, pgsql, mysql, entre outras.
+## Funcionalidades Principais
 
-- <b>Nginx</b>, como proxy reverso/servidor. Por fim de testes é que o Nginx está presente nesta imagem, em um momento de otimização está imagem deixará de ter o Nginx.
+1. **Cadastro e Locação de Veículos:**
+   - Os clientes (CUSTOMER) podem se cadastrar na plataforma e escolher veículos para locação, especificando as datas de retirada e devolução.
+   - O sistema notificará os clientes quando as locações forem confirmadas pelos funcionários (COMMOM), via e-mail e notificação push.
 
-- <b>Supervisor</b>, indispensal para executarmos a aplicação PHP e permitir por exemplo a execução de filas e jobs.
+2. **Permissões de Usuários:**
+   - **CUSTOMER:** Pode realizar locações e visualizar seu histórico de locações.
+   - **COMMOM:** Funcionário sem permissões administrativas, confirma locações e verifica o histórico geral de locações.
+   - **ADMIN:** Tem todas as permissões do COMMOM e pode listar, editar e cadastrar usuários e veículos.
 
-- <b>Composer</b>, afinal de contas é preciso baixar as dependências mais atuais toda vez que fomos crontruir uma imagem Docker.
+3. **Disponibilidade de Veículos:**
+   - O sistema garante que apenas veículos disponíveis na data escolhida estejam disponíveis para locação, evitando conflitos de reservas.
 
-# Vídeos Tutorial
+4. **Notificações e Promoções:**
+   - Os clientes recebem notificações push e e-mails para locações confirmadas, além de promoções e avisos programados pela equipe de marketing.
 
-[Vídeo Sobre Criação do Dockerfile e do Docker Compose file](https://youtu.be/iDJjb2zYa4c)
+## Como Rodar o Projeto
 
-# Passo a Passo
+### Sem Docker
 
-## Certifique-se de estar com o Docker em execução.
+1. Clone o projeto e acesse a pasta `APP`.
+2. Execute o comando `composer install`.
+3. Copie o arquivo `.env.example` e renomeie para `.env`.
+4. Execute o comando `php artisan key:generate`.
+5. Execute o comando `php artisan jwt:secret`.
+6. Para notificações de logs, configure a variável de ambiente `LOG_DISCORD_WEBHOOK_URL` com seu webhook.
+7. Para notificações push do FIREBASE, configure a variável de ambiente `FCM_SERVER_TOKEN`.
+8. Para e-mails, configure as variáveis de ambiente com as informações do seu SMTP.
 
-```sh
-docker ps
-```
+### Com Docker
 
-## Certifique-se de ter o Docker Compose instalado.
+Partindo do princípio que você já possui o Docker e Docker Compose configurados na sua máquina:
 
-```sh
-docker compose version
-```
+1. Faça o clone do projeto.
+2. Na raiz do projeto, execute o build da imagem executando: `docker-compose build`.
+3. Você pode executar o comando `docker-compose up -d` ou executar o script sh da raiz `START`.
+4. A aplicação irá rodar na porta 8000 com MySQL e Redis já configurados. Lembre-se de ajustar o seu `.env` com as configurações corretas, principalmente o host do Redis que deve ser alterado de `127.0.0.1` para `"redis"`.
 
-## Clone sua aplicação Laravel para a pasta 'app'. Caso a pasta app não existe, crie a pasta.
 
-A listagem de pastas do projeto deve ficar:
-
-```
-    app/
-    docker/
-    .gitignore
-    docker-compose.yml
-    readme.md
-```
-
-## Certifique-se que sua aplicação Laravel ficou em `./app` e que existe o seguinte caminho: `/app/public/index.php`
-
-## Certifique-se que sua aplicação Laravel possuí um .env e que este .env está com a `APP_KEY=` definida com valor válido.
-
-## Contruir a imagem Docker, execute:
-
-```sh
-docker compose build
-```
-
-## Caso não queira utilizar o cache da imagem presente no seu ambiente Docker, então execute:
-
-```sh
-docker compose build --no-cache
-```
-
-## Para subir a aplicação, execute:
-
-```sh
-docker compose up
-```
-
-- Para rodar o ambiente sem precisar manter o terminar aberto, execute:
-
-```sh
-docker compose up -d
-```
-
-## Para derrubar a aplicação, execute:
-
-```sh
-docker compose down
-```
-
-## Para entrar dentro do Container da Aplicação, execute:
-
-```sh
-docker exec -it web bash
-```
-
-# Solução de Problemas
-
-## Problema de permissão
-
-- Quando for criado novos arquivos, ou quando for a primeira inicialização do container com a aplicação, pode então haver um erro de permissão de acesso as pastas, neste caso, entre dentro do container da aplicação e execeute.
-
-```sh
-cd /var/www && \
-chown -R www-data:www-data * && \
-chmod -R o+w app
-```
+Em ambos os casos lembre de rodar os comandos  `php artisan migrate` e  `php artisan db:seed` 
