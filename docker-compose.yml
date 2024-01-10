@@ -1,0 +1,47 @@
+version: "3.9"
+services:
+  web:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    networks:
+      - hss_public
+    volumes:
+      - ./app:/var/www/app
+      - ./docker/nginx/sites:/etc/nginx/sites-available
+    ports:
+      #- "80:80" #http
+      #- "443:443" #https
+      - "8000:8000"
+    depends_on:
+      - mysql
+    # aplicação MySQL
+  mysql:
+    image: mysql:8.0.29-debian
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    volumes:
+      #      - MYSQL_VOLUME_EXEMPLO=/var/lib/mysql
+      - MYSQL_VOLUME:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: hss_rental
+    networks:
+      - hss_public
+    ports:
+      - "3307:3306"
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - hss_public
+    volumes:
+      - "./redis:/data"
+networks:
+  hss_public:
+    external: true
+volumes:
+  MYSQL_VOLUME:
+    driver: local
