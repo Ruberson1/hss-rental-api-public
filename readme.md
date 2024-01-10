@@ -23,7 +23,7 @@ Bem-vindo à documentação da HSS RENTAL - sua solução de locação de veícu
 
 ## Como Rodar o Projeto
 
-**LEMBRE-SE DE CONFIGURAR O PROJETO FRONTEND:** [REPOSITÓRIO](https://hssrental.netlify.app)
+**LEMBRE-SE DE CONFIGURAR O PROJETO FRONTEND:** [REPOSITÓRIO](https://github.com/Ruberson1/hss-rentacar-public)
 
 ### Sem Docker
 
